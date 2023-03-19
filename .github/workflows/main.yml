@@ -1,23 +1,26 @@
-name: CI
+name: Flask-app workflow
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ] 
-    
+on: [push]
+
 jobs:
-  build:
-    
+  tests:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
-    - name: Run a one-line script
-      run: echo Hello, world!
-      
-    - name: Run a multi-line script
+    - name: Set up Python 
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10
+
+    - name: Install dependencies
       run: |
-        echo Add other actions to build,
-        echo test and deploy your project.
-    
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        pip install -r requirements.txt
+
+    - name: Lint with flake8
+      run: flake8 .
+
+    - name: Test with pytest
+      run: pytest tests.py 
